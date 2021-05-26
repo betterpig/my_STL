@@ -1,0 +1,2 @@
+operator delete只要给定指针就能释放内存，不需要输入size，那为什么还要size作为参数
+为什么vector容器不直接通过动态数组管理数据，而要通过allocator
