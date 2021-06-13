@@ -7,8 +7,9 @@ int main()
 {
 	vector<int> v({ 1,2,3 });
 	v.push_back(4);
-	v.insert(v.end() - 2,3, 5);
-	for (int i = 0; i < v.size(); i++)
-		std::cout << v[i] << std::endl;
+	vector<int> v2({ 5,6,7 });
+	v.insert(v.end()-2,v2.begin(),v2.end()-1);
+	for (vector<int>::iterator it = v.begin(); it != v.end(); it++)
+		std::cout << *it << std::endl;
 	int a = 1;
 }

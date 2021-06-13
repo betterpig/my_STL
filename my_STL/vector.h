@@ -83,12 +83,12 @@ namespace stl
 		//Ôö
 		void push_back(const_reference x)
 		{
-			insert(finish, 1, x);
+			insert(finish, size_type(1), x);
 		}
 
 		iterator insert(iterator pos, const_reference x)
 		{
-			insert(pos, 1, x);
+			insert(pos, size_type(1), x);
 			return pos;
 		}
 		iterator insert(iterator pos, size_type n, const_reference x)
@@ -125,11 +125,49 @@ namespace stl
 			}
 			return pos;
 		}
-		/*template<Input_iter>
+		template<typename Input_iter>
 		iterator insert(iterator pos, Input_iter first, Input_iter last)
 		{
-			
-		}*/
+			size_type n = size_type(last - first);
+			if (finish + n - 1 != end_of_storage)
+			{
+				if (pos == finish)
+				{
+					int a = 1;
+					finish = uninitialized_copy(first, last, finish);
+				}
+				else
+				{
+					backward_copy(pos, finish, finish + n);
+					uninitialized_copy(first, last, pos);
+					finish = finish + n;
+				}
+			}
+			else
+			{
+				const size_type old_cap = capacity();
+				const size_type new_cap = old_cap != 0 ? 2 * (old_cap + n) : 1;
+				iterator new_start = data_allocator.allocate(new_cap);
+				iterator new_finish = new_start;
+
+				new_finish = uninitialized_copy(start, pos, new_start);
+				new_finish = uninitialized_copy(first, last, new_finish);
+				new_finish = uninitialized_copy(pos, finish, new_finish);
+
+				data_allocator.destroy(begin(), end());
+				data_allocator.deallocate(begin(), capacity());
+				start = new_start;
+				finish = new_finish;
+				end_of_storage = start + new_cap;
+			}
+			return pos;
+		}
+
+		iterator insert(iterator pos, std::initializer_list<T> init)
+		{
+			insert(pos, init.begin(), init.end());
+			return pos;
+		}
 
 		//É¾
 		void pop_back()
