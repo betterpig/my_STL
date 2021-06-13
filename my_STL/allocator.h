@@ -2,7 +2,7 @@
 #define MYSTL_ALLOCATOR_H
 
 #include <utility>
-
+#include "iterator.h"
 
 
 namespace stl
@@ -18,12 +18,27 @@ namespace stl
 		}
 		return start;
 	}
+	template<typename Forward_iter, typename Value_type>
+	Forward_iter uninitialized_fill(Forward_iter first, Forward_iter last, Value_type x)
+	{
+		for (; first != last; ++first)
+			::new (static_cast<void*>(first)) typename iterator_traits<Forward_iter>::value_typ(x);
+		return first;
+	}
 
 	template<typename Input_iter ,typename Forward_iter>
-	Forward_iter uninitialized_fill_copy(Input_iter first, Input_iter last, Forward_iter d_first)
+	Forward_iter uninitialized_copy(Input_iter first, Input_iter last, Forward_iter d_first)
 	{
-		for (; first != last; ++d_first, (void) ++first)
-			::new (static_cast<void*>(d_first)) typename iterator_traits<ForwardIt>::value_type(*first);
+		for (; first != last; ++d_first, ++first)
+			::new (static_cast<void*>(d_first)) typename iterator_traits<Forward_iter>::value_type(*first);
+		return d_first;
+	}
+
+	template<typename Input_iter, typename Size_type, typename Forward_iter>
+	Forward_iter uninitialized_copy_n(Input_iter first, Size_type n, Forward_iter d_first)
+	{
+		for (; n > 0; --n,++d_first, ++first)
+			::new (static_cast<void*>(d_first)) typename iterator_traits<Forward_iter>::value_type(*first);
 		return d_first;
 	}
 
