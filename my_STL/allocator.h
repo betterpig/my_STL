@@ -22,7 +22,7 @@ namespace stl
 	Forward_iter uninitialized_fill(Forward_iter first, Forward_iter last, Value_type x)
 	{
 		for (; first != last; ++first)
-			::new (static_cast<void*>(first)) typename iterator_traits<Forward_iter>::value_typ(x);
+			::new (static_cast<void*>(first)) typename iterator_traits<Forward_iter>::value_type(x);
 		return first;
 	}
 
